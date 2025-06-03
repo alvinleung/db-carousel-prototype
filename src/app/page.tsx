@@ -16,12 +16,6 @@ export default function Home() {
         safeAreaWidth={906}
         safeAreaHeight={700}
         tag={"before"}
-        theme={{
-          bg: "#FFF",
-          fg: "#000",
-          tagFg: "#F0F",
-          tagBg: "#0F0",
-        }}
       >
         <AssetCarousel.item
           src={"/asset-content-1.jpg"}
@@ -54,7 +48,11 @@ export default function Home() {
         relevance. The result was a steep learnability curve that discouraged
         further exploration. 
       </p>
-      <AssetCarousel safeAreaWidth={906} safeAreaHeight={700}>
+      <AssetCarousel
+        title={"fdsfdsafdss"}
+        safeAreaWidth={906}
+        safeAreaHeight={700}
+      >
         <AssetCarousel.item
           src={"/asset-content-1.jpg"}
           caption={
