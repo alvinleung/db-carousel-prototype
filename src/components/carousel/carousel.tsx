@@ -15,11 +15,20 @@ import { cn } from "../ui/utils";
 import { CarouselArrowLeft, CarouselArrowRight } from "./arrow";
 import { useInputMode } from "./use-input-mode";
 
+const DefaultTheme = {
+  bg: "#F1F3EF",
+  fg: "#2B390A",
+  tagBg: "#2B6B5E",
+  tagFg: "var(--color-gray-50)",
+};
+
 interface AssetCarouselProps {
   children: React.ReactElement<AssetCarouselItemProps>[];
-  title: string;
+  title?: string;
+  tag?: string;
   safeAreaWidth?: number;
   safeAreaHeight?: number;
+  theme?: typeof DefaultTheme;
 }
 
 // ease out expo
@@ -31,8 +40,10 @@ export const EASE_IN_OUT = [0.76, 0, 0.24, 1];
 const AssetCarousel = ({
   children,
   title,
+  tag,
   safeAreaWidth = 906,
   safeAreaHeight = 700,
+  theme = DefaultTheme,
 }: AssetCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerDim = useResizeObserver({
@@ -40,11 +51,12 @@ const AssetCarousel = ({
   });
   const scrollContainerWidth = scrollContainerDim.width || 0;
   const slidesCount = React.Children.count(children);
+
+  // values that help determine caption size
   const allCaptions = React.Children.map(
     children,
     (child) => child.props.caption,
   );
-
   const longestCaption = useMemo(
     () =>
       allCaptions.reduce(
@@ -62,9 +74,11 @@ const AssetCarousel = ({
     [allCaptions],
   );
 
+  // enable navigation mode toggle
   const inputMode = useInputMode();
   const showNavigationButton = inputMode === "mouse" || inputMode === undefined;
 
+  // handle the scrolling logic
   const [current, setCurrent] = useState<number>(0);
   const canGoNext = current < slidesCount - 1;
   const canGoPrev = current > 0;
@@ -76,6 +90,7 @@ const AssetCarousel = ({
     setCurrent(currPage);
   });
 
+  // function for changing slide
   const moveSlide = useCallback(
     (increment: number) => {
       const incremented = current + increment;
@@ -91,6 +106,8 @@ const AssetCarousel = ({
     },
     [current, slidesCount, scrollContainerWidth],
   );
+
+  const hasTitleBar = title || tag;
 
   return (
     <figure
@@ -111,14 +128,14 @@ const AssetCarousel = ({
           "--safe-area-h": safeAreaHeight,
           "--safe-area-w-px": "calc(var(--safe-area-w)*1px)",
           "--safe-area-h-px": "calc(var(--safe-area-h)*1px)",
-          "--bg": "#F1F3EF",
-          "--fg": "#2B390A",
-          "--tag-bg": "#2B6B5E",
-          "--tag-fg": "var(--color-gray-50)",
+          "--bg": theme.bg,
+          "--fg": theme.fg,
+          "--tag-bg": theme.tagBg,
+          "--tag-fg": theme.tagFg,
         } as CSSProperties
       }
     >
-      {/* The bg container */}
+      {/* The main container */}
       <div
         className={cn(
           "overflow-hidden relative rounded-3xl max-w-[1664px] mx-auto",
@@ -127,19 +144,28 @@ const AssetCarousel = ({
         )}
       >
         {/* the header module */}
-        <div className="z-10 pt-(--margin) px-(--margin) flex flex-row items-center">
-          <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
-            Before
-          </div>
-          <div className="mx-auto px-24">
-            <div className="w-[530px] text-left font-var-medium text-base">
-              {title}
+        {hasTitleBar && (
+          <div className="z-10 pt-(--margin) px-(--margin) flex flex-row items-center">
+            {tag && (
+              <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
+                {tag}
+              </div>
+            )}
+            {title && (
+              <div
+                className={cn(
+                  " text-left font-var-medium text-base",
+                  tag ? "w-[530px] mx-auto px-24" : "",
+                )}
+              >
+                {title}
+              </div>
+            )}
+            <div className="absolute right-(--margin) top-(--margin) text-xs items-center flex rounded-full px-2.5 h-6">
+              {/* placeholder for top right */}
             </div>
           </div>
-          <div className="absolute right-(--margin) top-(--margin) text-xs items-center flex rounded-full px-2.5 h-6">
-            {/* placeholder for top right */}
-          </div>
-        </div>
+        )}
 
         {/* The image itself */}
         <div className="relative">

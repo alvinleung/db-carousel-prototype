@@ -11,7 +11,18 @@ export default function Home() {
         relevance. The result was a steep learnability curve that discouraged
         further exploration. 
       </p>
-      <AssetCarousel title={"First Load Experience"}>
+      <AssetCarousel
+        title={"First Load Experience"}
+        safeAreaWidth={906}
+        safeAreaHeight={700}
+        tag={"before"}
+        theme={{
+          bg: "#FFF",
+          fg: "#000",
+          tagFg: "#F0F",
+          tagBg: "#0F0",
+        }}
+      >
         <AssetCarousel.item
           src={"/asset-content-1.jpg"}
           caption={
@@ -43,6 +54,30 @@ export default function Home() {
         relevance. The result was a steep learnability curve that discouraged
         further exploration. 
       </p>
+      <AssetCarousel safeAreaWidth={906} safeAreaHeight={700}>
+        <AssetCarousel.item
+          src={"/asset-content-1.jpg"}
+          caption={
+            "Why are there so many buttons... I just want Anthropic to run my prompt..."
+          }
+        />
+        <AssetCarousel.item
+          src={"/asset-content-2.jpg"}
+          caption={"Wait... they are purely repeat of each other?"}
+        />
+        <AssetCarousel.item
+          src={"/asset-content-3.jpg"}
+          caption={"Does it really tell me anything new here?"}
+        />
+        <AssetCarousel.item
+          src={"/asset-content-3.jpg"}
+          caption={"Does anyone really know what these icons do?"}
+        />
+        <AssetCarousel.item
+          src={"/asset-content-zoomed.jpg"}
+          caption={"This is a zoom test"}
+        />
+      </AssetCarousel>
     </main>
   );
 }
