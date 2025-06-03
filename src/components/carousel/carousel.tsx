@@ -176,7 +176,7 @@ const AssetCarousel = ({
                     aria-roledescription="slide"
                     aria-label={`${index + 1} of ${slidesCount}`}
                     aria-describedby={`slide-${index}-caption`}
-                    tabIndex={index + 1}
+                    tabIndex={0}
                     style={
                       {
                         "--carousel-index": index,
