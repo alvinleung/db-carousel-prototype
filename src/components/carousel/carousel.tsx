@@ -123,7 +123,7 @@ const AssetCarousel = ({
         className={cn(
           "overflow-hidden relative rounded-3xl max-w-[1664px] mx-auto",
           "bg-(--bg) text-(--fg)",
-          // "outline-0 transition-all focus-within:outline-3 lg:focus-within:outline-4 outline-(--fg)/20",
+          "outline-0 transition-all has-focus-visible:outline-4 outline-(--fg)/30",
         )}
       >
         {/* the header module */}
@@ -171,7 +171,7 @@ const AssetCarousel = ({
                 return (
                   <motion.div
                     key={index}
-                    className="h-full min-w-full"
+                    className="h-full min-w-full focus-visible:opacity-100"
                     role="tabpanel"
                     aria-roledescription="slide"
                     aria-label={`${index + 1} of ${slidesCount}`}
