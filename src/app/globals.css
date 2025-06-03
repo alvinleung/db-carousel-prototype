@@ -1,26 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fcfafb;
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-aspekta);
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utility {
+  .font-var-thin {
+    font-variation-settings: "wght" 100;
+  }
+  .font-var-extralight {
+    font-variation-settings: "wght" 200;
+  }
+  .font-var-light {
+    font-variation-settings: "wght" 300;
+  }
+  .font-var-normal {
+    font-variation-settings: "wght" 400;
+  }
+  .font-var-medium {
+    font-variation-settings: "wght" 500;
+  }
+  .font-var-semibold {
+    font-variation-settings: "wght" 600;
+  }
+  .font-var-bold {
+    font-variation-settings: "wght" 700;
+  }
+  .font-var-extrabold {
+    font-variation-settings: "wght" 800;
+  }
+  .font-var-black {
+    font-variation-settings: "wght" 900;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
 }
