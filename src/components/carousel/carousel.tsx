@@ -12,7 +12,6 @@ import Image from "next/image";
 import { useResizeObserver } from "usehooks-ts";
 import {
   motion,
-  MotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
