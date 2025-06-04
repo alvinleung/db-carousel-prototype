@@ -17,6 +17,7 @@ export default function Home() {
         safeAreaHeight={700}
         transition="fade"
         tag={"before"}
+        titleBarAlignment="safe-area"
         theme={{
           fg: "rgba(43,57,10,.7)",
           bg: "#FCFAFB",

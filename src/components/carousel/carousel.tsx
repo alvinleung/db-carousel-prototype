@@ -35,6 +35,7 @@ interface AssetCarouselProps {
   safeAreaWidth?: number;
   safeAreaHeight?: number;
   transition?: "fade" | "scroll";
+  titleBarAlignment?: "edge" | "safe-area" | "center-column";
   theme?: typeof DefaultTheme;
 }
 
@@ -52,6 +53,7 @@ const AssetCarousel = ({
   safeAreaHeight = 700,
   theme = DefaultTheme,
   transition = "fade",
+  titleBarAlignment = "edge",
 }: AssetCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerDim = useResizeObserver({
@@ -155,9 +157,17 @@ const AssetCarousel = ({
       >
         {/* the header module */}
         {hasTitleBar && (
-          <div className="z-10 pt-(--margin) py-[calc(var(--margin)/2)] px-(--margin) flex flex-row items-center">
+          <div
+            className={cn(
+              {
+                "max-w-[564px] mx-auto": titleBarAlignment === "center-column",
+                "max-w-[940px] mx-auto": titleBarAlignment === "safe-area",
+              },
+              "z-10 relative  pt-(--margin) pb-[calc(var(--margin)/2)] px-(--margin) flex flex-row items-center",
+            )}
+          >
             {tag && (
-              <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
+              <div className="absolute uppercase tracking-widest left-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
                 {tag}
               </div>
             )}
@@ -172,7 +182,7 @@ const AssetCarousel = ({
                 <div className={cn(tag ? "w-[530px]" : "")}>{title}</div>
               </div>
             )}
-            <div className="absolute right-(--margin) top-(--margin) text-xs items-center flex rounded-full px-2.5 h-6">
+            <div className="absolute right-(--margin) text-xs items-center flex rounded-full px-2.5 h-6">
               {/* placeholder for top right */}
             </div>
           </div>
