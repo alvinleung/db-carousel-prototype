@@ -43,7 +43,7 @@ const CarouselArrowRight = ({
         strokeLinecap="round"
         animate={{
           strokeWidth: isFlat ? 3 : 4,
-          opacity: isFlat ? 0.2 : 1,
+          // opacity: isFlat ? 0.5 : 1,
         }}
         strokeDashoffset={isFlat ? 1 : 0}
         strokeDasharray={isFlat ? 7 : 0}
@@ -76,7 +76,7 @@ const CarouselArrowLeft = ({
         strokeLinecap="round"
         animate={{
           strokeWidth: isFlat ? 3 : 4,
-          opacity: isFlat ? 0.2 : 1,
+          // opacity: isFlat ? 0.5 : 1,
         }}
         strokeDashoffset={isFlat ? 1 : 0}
         strokeDasharray={isFlat ? 7 : 0}

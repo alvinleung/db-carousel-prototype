@@ -161,7 +161,7 @@ const AssetCarousel = ({
       >
         {/* the header module */}
         {hasTitleBar && (
-          <div className="z-10 pt-(--margin) py-[calc(var(--margin)*0.75)] px-(--margin) flex flex-row items-center">
+          <div className="z-10 pt-(--margin) py-[calc(var(--margin)/2)] px-(--margin) flex flex-row items-center">
             {tag && (
               <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
                 {tag}
@@ -354,7 +354,7 @@ const ArrowButton = ({
       <motion.span
         initial={{ opacity: 0 }}
         animate={{
-          opacity: isHovering ? 1 : 0.2,
+          opacity: isHovering && enabled ? 1 : 0.2,
           x: enabled ? (isPressing ? 7 * dir : isHovering ? 0 : 4 * dir) : 0,
           scaleY: enabled && isPressing ? 0.95 : 1,
           scaleX: enabled && isPressing ? 1.2 : 1,
