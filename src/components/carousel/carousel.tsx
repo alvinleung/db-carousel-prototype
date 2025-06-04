@@ -151,15 +151,17 @@ const AssetCarousel = ({
     >
       {/* The main container */}
       <div
+        onClick={() => moveSlide(1)}
         className={cn(
           "overflow-hidden relative rounded-3xl max-w-[1664px] mx-auto",
           "bg-(--bg) text-(--fg)",
           "outline-0 transition-all has-focus-visible:outline-4 outline-(--fg)/30",
+          "cursor-pointer",
         )}
       >
         {/* the header module */}
         {hasTitleBar && (
-          <div className="z-10 pt-(--margin) px-(--margin) flex flex-row items-center">
+          <div className="z-10 py-(--margin) px-(--margin) flex flex-row items-center">
             {tag && (
               <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
                 {tag}
@@ -331,7 +333,11 @@ const ArrowButton = ({
     <motion.button
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      onClick={onClick}
+      onClickCapture={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
       className={cn(
         enabled && "cursor-pointer",
         "w-1/6 flex items-center",
