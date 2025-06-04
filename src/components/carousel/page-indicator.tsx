@@ -52,7 +52,7 @@ const PageIndicatorItem = ({
       key={index}
       className={cn(
         `size-5 text-[10px] font-var-bold rounded-full text-(--bg) bg-(--fg)`,
-        // { "shadow-sm": current === index },
+        "transition-transform ease-out duration-75",
       )}
       style={{
         opacity,
