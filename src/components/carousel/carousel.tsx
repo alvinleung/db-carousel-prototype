@@ -161,7 +161,7 @@ const AssetCarousel = ({
       >
         {/* the header module */}
         {hasTitleBar && (
-          <div className="z-10 py-(--margin) px-(--margin) flex flex-row items-center">
+          <div className="z-10 pt-(--margin) py-[calc(var(--margin)*0.75)] px-(--margin) flex flex-row items-center">
             {tag && (
               <div className="absolute uppercase tracking-widest left-(--margin) top-(--margin) text-xs items-center flex rounded-full bg-(--tag-bg) text-(--tag-fg) px-2.5 h-6">
                 {tag}
@@ -247,7 +247,7 @@ const AssetCarousel = ({
               );
             })}
 
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+          <div className="absolute bottom-[calc(var(--margin)/2)] md:bottom-(--margin) left-0 right-0 flex justify-center">
             <PageIndicator
               pages={slidesCount}
               currentSlideContinuous={currentSlideContinuous}

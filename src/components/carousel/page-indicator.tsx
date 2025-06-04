@@ -14,7 +14,7 @@ export const PageIndicator = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center justify-center gap-0.5 h-5",
+        "flex flex-row items-center justify-center gap-0.5 h-4",
         className,
       )}
       {...props}
@@ -51,7 +51,7 @@ const PageIndicatorItem = ({
     <motion.button
       key={index}
       className={cn(
-        `size-5 text-[10px] font-var-bold rounded-full text-(--bg) bg-(--fg)`,
+        `size-4 text-[10px] font-var-bold rounded-full text-(--bg) bg-(--fg)`,
         "transition-transform ease-out duration-75",
       )}
       style={{
