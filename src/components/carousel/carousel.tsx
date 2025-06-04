@@ -129,12 +129,6 @@ const AssetCarousel = ({
       tabIndex={-1}
       className="relative"
       // for tabbing
-      onFocus={() => {
-        scrollContainerRef.current?.scrollIntoView({
-          block: "center",
-          behavior: "smooth",
-        });
-      }}
       style={
         {
           "--margin": "calc(var(--spacing)*4)",
