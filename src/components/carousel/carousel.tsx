@@ -10,10 +10,17 @@ import React, {
 } from "react";
 import Image from "next/image";
 import { useResizeObserver } from "usehooks-ts";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import {
+  motion,
+  MotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "motion/react";
 import { cn } from "../ui/utils";
 import { CarouselArrowLeft, CarouselArrowRight } from "./arrow";
 import { useInputMode } from "./use-input-mode";
+import { PageIndicator } from "./page-indicator";
 
 const DefaultTheme = {
   bg: "#F1F3EF",
@@ -28,6 +35,7 @@ interface AssetCarouselProps {
   tag?: string;
   safeAreaWidth?: number;
   safeAreaHeight?: number;
+  transition?: "fade" | "scroll";
   theme?: typeof DefaultTheme;
 }
 
@@ -44,6 +52,7 @@ const AssetCarousel = ({
   safeAreaWidth = 906,
   safeAreaHeight = 700,
   theme = DefaultTheme,
+  transition = "fade",
 }: AssetCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollContainerDim = useResizeObserver({
@@ -89,6 +98,12 @@ const AssetCarousel = ({
     const currPage = Math.round(scroll / scrollContainerWidth);
     setCurrent(currPage);
   });
+
+  const currentSlideContinuous = useTransform(
+    scrollX,
+    [0, scrollContainerWidth * slidesCount],
+    [0, slidesCount],
+  );
 
   // function for changing slide
   const moveSlide = useCallback(
@@ -189,34 +204,47 @@ const AssetCarousel = ({
             tabIndex={-1}
             role="tablist"
           >
+            {/* the scrolling part of the carousel */}
             <div className="flex flex-row h-full">
               {React.Children.map(children, (child, index) => {
                 return (
                   <motion.div
                     key={index}
-                    className="h-full min-w-full focus-visible:opacity-100"
+                    className="h-full min-w-full focus-visible:opacity-100 snap-center"
                     role="tabpanel"
                     aria-roledescription="slide"
                     aria-label={`${index + 1} of ${slidesCount}`}
                     aria-describedby={`slide-${index}-caption`}
                     tabIndex={0}
-                    style={
-                      {
-                        "--carousel-index": index,
-                      } as CSSProperties
-                    }
                   >
-                    {child}
+                    {/* only render when scroll transition is applied */}
+                    {transition === "scroll" && child}
                   </motion.div>
                 );
               })}
             </div>
           </div>
 
+          {transition === "fade" &&
+            React.Children.map(children, (child, index) => {
+              return (
+                <motion.div
+                  key={index}
+                  className="z-0 absolute inset-0 pointer-events-none"
+                  aria-hidden
+                  animate={{
+                    opacity: current === index ? 1 : 0,
+                  }}
+                >
+                  {child}
+                </motion.div>
+              );
+            })}
+
           <div className="absolute bottom-4 left-0 right-0 flex justify-center">
             <PageIndicator
-              pages={React.Children.count(children)}
-              current={current}
+              pages={slidesCount}
+              currentSlideContinuous={currentSlideContinuous}
             />
           </div>
 
@@ -339,65 +367,12 @@ interface AssetCarouselItemProps {
 const AssetCarouselItem = ({ src, caption }: AssetCarouselItemProps) => {
   return (
     <Image
-      className="h-full object-cover snap-center"
+      className="h-full object-cover "
       src={src}
       alt={caption}
       width={1664}
       height={700}
     />
-  );
-};
-
-const PageIndicator = ({
-  pages,
-  current,
-  className,
-  ...props
-}: React.HTMLProps<HTMLDivElement> & {
-  numbers?: boolean; // should we show numbers
-  pages: number;
-  current: number;
-}) => {
-  return (
-    <div
-      className={cn(
-        "flex flex-row items-center justify-center gap-0.5 h-5",
-        className,
-      )}
-      {...props}
-    >
-      {Array.from({ length: pages }).map((_, index) => (
-        <motion.button
-          key={index}
-          className={cn(
-            `size-5 text-[10px] font-var-bold rounded-full text-(--bg) bg-(--fg)`,
-            { "shadow-sm": current === index },
-          )}
-          initial={{
-            opacity: 0,
-            scale: 0,
-          }}
-          animate={{
-            opacity: current === index ? 1 : 0.4,
-            scale: current === index ? 1 : 0.3,
-          }}
-          aria-hidden
-          tabIndex={-1}
-          transition={{
-            duration: 0.5,
-            ease: EASE_OUT,
-          }}
-        >
-          <motion.span
-            animate={{
-              opacity: current === index ? 1 : 0,
-            }}
-          >
-            {index + 1}
-          </motion.span>
-        </motion.button>
-      ))}
-    </div>
   );
 };
 

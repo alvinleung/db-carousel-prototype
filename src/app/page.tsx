@@ -15,6 +15,7 @@ export default function Home() {
         title={"First Load Experience"}
         safeAreaWidth={906}
         safeAreaHeight={700}
+        transition="scroll"
         tag={"before"}
       >
         <AssetCarousel.item
@@ -49,7 +50,7 @@ export default function Home() {
         further exploration. 
       </p>
       <AssetCarousel
-        title={"fdsfdsafdss"}
+        title={"This is a faade carousel"}
         safeAreaWidth={906}
         safeAreaHeight={700}
       >
