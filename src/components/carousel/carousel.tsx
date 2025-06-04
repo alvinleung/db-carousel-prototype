@@ -167,10 +167,14 @@ const AssetCarousel = ({
               </div>
             )}
             {title && (
-              <div className={cn("text-left font-var-medium text-base")}>
-                <div className={cn(tag ? "w-[530px] mx-auto px-24" : "")}>
-                  {title}
-                </div>
+              <div
+                className={cn(
+                  "h-6 flex flex-row items-center",
+                  "text-left font-var-medium text-xs  uppercase tracking-wider",
+                  tag ? "mx-auto px-22" : "",
+                )}
+              >
+                <div className={cn(tag ? "w-[530px]" : "")}>{title}</div>
               </div>
             )}
             <div className="absolute right-(--margin) top-(--margin) text-xs items-center flex rounded-full px-2.5 h-6">
@@ -197,6 +201,7 @@ const AssetCarousel = ({
                 : "var(--margin)",
             }}
           />
+
           <div
             ref={scrollContainerRef}
             className="overscroll-x-none overflow-x-scroll no-scrollbar absolute inset-0 snap-x snap-mandatory"
