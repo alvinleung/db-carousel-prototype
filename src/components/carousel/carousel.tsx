@@ -37,6 +37,7 @@ interface AssetCarouselProps {
   transition?: "fade" | "scroll";
   titleBarAlignment?: "edge" | "safe-area" | "center-column";
   theme?: typeof DefaultTheme;
+  arrows?: boolean;
 }
 
 // ease out expo
@@ -49,6 +50,7 @@ const AssetCarousel = ({
   children,
   title,
   tag,
+  arrows,
   safeAreaWidth = 906,
   safeAreaHeight = 700,
   theme = DefaultTheme,
@@ -86,7 +88,8 @@ const AssetCarousel = ({
 
   // enable navigation mode toggle
   const inputMode = useInputMode();
-  const showNavigationButton = inputMode === "mouse" || inputMode === undefined;
+  const showNavigationButton =
+    arrows && (inputMode === "mouse" || inputMode === undefined);
 
   // handle the scrolling logic
   const [current, setCurrent] = useState<number>(0);
@@ -220,7 +223,9 @@ const AssetCarousel = ({
                 return (
                   <motion.div
                     key={index}
-                    className="h-full min-w-full focus-visible:opacity-100 snap-center"
+                    className={cn(
+                      "h-full min-w-full focus-visible:opacity-100 snap-center",
+                    )}
                     role="tabpanel"
                     aria-roledescription="slide"
                     aria-label={`${index + 1} of ${slidesCount}`}

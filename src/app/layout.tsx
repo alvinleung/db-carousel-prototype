@@ -3,6 +3,7 @@ import "./globals.css";
 // Import the font utility
 
 import localFont from "next/font/local";
+import DebugConsoleProvider from "@/components/ui/debug-console";
 
 // Load your custom variable font
 const aspekta = localFont({
@@ -25,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${aspekta.className}  antialiased`}>{children}</body>
+      <body className={`${aspekta.className}  antialiased`}>
+        <DebugConsoleProvider>{children}</DebugConsoleProvider>
+      </body>
     </html>
   );
 }

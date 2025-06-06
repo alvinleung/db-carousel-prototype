@@ -42,7 +42,7 @@ const CarouselArrowRight = ({
         stroke="currentColor"
         strokeLinecap="round"
         animate={{
-          strokeWidth: isFlat ? 3 : 4,
+          strokeWidth: isFlat ? 2 : 3,
           // opacity: isFlat ? 0.5 : 1,
         }}
         strokeDashoffset={isFlat ? 1 : 0}
@@ -75,7 +75,7 @@ const CarouselArrowLeft = ({
         stroke="currentColor"
         strokeLinecap="round"
         animate={{
-          strokeWidth: isFlat ? 3 : 4,
+          strokeWidth: isFlat ? 2 : 3,
           // opacity: isFlat ? 0.5 : 1,
         }}
         strokeDashoffset={isFlat ? 1 : 0}
