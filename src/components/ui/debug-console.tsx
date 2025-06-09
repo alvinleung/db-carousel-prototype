@@ -2,11 +2,13 @@
 
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 
+type FlagValue = string | boolean;
+
 const DebugConsoleContext = React.createContext<DebugConsole | undefined>(
   undefined,
 );
 
-interface FeatureFlagOptions<T extends readonly string[]> {
+interface FeatureFlagOptions<T extends readonly FlagValue[]> {
   label: string;
   descriptions?: string;
   values: T;
@@ -16,7 +18,31 @@ interface Observable<T> {
   onChange(handler: (latest: T) => void): () => void;
 }
 
-class FeatureFlag<T extends readonly string[]>
+function stringifyFlagValue(value: FlagValue): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "boolean") {
+    return value === true ? "true" : "false";
+  }
+
+  throw "Unexpected input type: " + typeof value;
+}
+
+function unstringifyFlagValue(
+  input: string | undefined,
+): FlagValue | undefined {
+  if (input === "true") {
+    return true;
+  }
+  if (input === "false") {
+    return false;
+  }
+  return input;
+}
+
+class FeatureFlag<T extends readonly FlagValue[]>
   implements FeatureFlagOptions<T>, Observable<T[number]>
 {
   label: string;
@@ -29,6 +55,7 @@ class FeatureFlag<T extends readonly string[]>
     this.currentValue = val;
     this.handlers.forEach((handler) => handler(val));
   }
+
   get value() {
     return this.currentValue;
   }
@@ -48,11 +75,15 @@ class FeatureFlag<T extends readonly string[]>
   }
 }
 
-export function options<const T extends readonly string[]>(arr: T): T {
+export function options<const T extends readonly FlagValue[]>(arr: T): T {
   return arr;
 }
 
-export function useFeatureFlag<T extends readonly string[]>(
+export function bool() {
+  return options([true, false]);
+}
+
+export function useFeatureFlag<T extends readonly FlagValue[]>(
   options: FeatureFlagOptions<T>,
 ) {
   const context = useContext(DebugConsoleContext);
@@ -64,7 +95,6 @@ export function useFeatureFlag<T extends readonly string[]>(
   const frozenOptionValueRef = useRef(options.values);
   for (let i = 0; i < options.values.length; i++) {
     if (options.values[i] !== frozenOptionValueRef.current[i]) {
-      console.log("changed!");
       frozenOptionValueRef.current = options.values;
       break;
     }
@@ -81,22 +111,25 @@ export function useFeatureFlag<T extends readonly string[]>(
 
     const cleanup = featureFlag.onChange((latest) => {
       setVal(latest);
-      URLState.set(featureFlag.label, latest);
+      URLState.set(featureFlag.label, stringifyFlagValue(latest));
     });
     context.addFlag(featureFlag);
 
-    featureFlag.value = URLState.get(featureFlag.label) || featureFlag.value;
+    featureFlag.value =
+      unstringifyFlagValue(URLState.get(featureFlag.label)) ||
+      featureFlag.value;
 
     return () => {
       cleanup();
       context.removeFlag(featureFlag);
     };
   }, [context, options.descriptions, options.label, deepComparedValueOption]);
+
   return val;
 }
 
 class DebugConsole {
-  readonly _interanl_flags = new Set<FeatureFlag<readonly string[]>>();
+  readonly _interanl_flags = new Set<FeatureFlag<readonly FlagValue[]>>();
 
   private refreshReact: () => void;
 
@@ -104,15 +137,17 @@ class DebugConsole {
     this.refreshReact = refreshReact;
   }
 
-  addFlag<T extends readonly string[]>(flag: FeatureFlag<T>) {
-    this._interanl_flags.add(flag as unknown as FeatureFlag<readonly string[]>);
+  addFlag<T extends readonly FlagValue[]>(flag: FeatureFlag<T>) {
+    this._interanl_flags.add(
+      flag as unknown as FeatureFlag<readonly FlagValue[]>,
+    );
     this.refreshReact();
     console.log("added:", this._interanl_flags);
   }
 
-  removeFlag<T extends readonly string[]>(flag: FeatureFlag<T>) {
+  removeFlag<T extends readonly FlagValue[]>(flag: FeatureFlag<T>) {
     this._interanl_flags.delete(
-      flag as unknown as FeatureFlag<readonly string[]>,
+      flag as unknown as FeatureFlag<readonly FlagValue[]>,
     );
     console.log("removed:", flag);
     this.refreshReact();
@@ -204,15 +239,15 @@ const DebugConsoleProvider = ({ children }: React.PropsWithChildren) => {
 };
 
 interface EditorProps {
-  flag: FeatureFlag<readonly string[]>;
+  flag: FeatureFlag<readonly FlagValue[]>;
 }
 
 const OptionEditor = ({ flag }: EditorProps) => {
   const [value, setValue] = useState(flag.value);
 
   useEffect(() => {
-    const unobserve = flag.onChange((latest: string) => {
-      setValue(latest as string);
+    const unobserve = flag.onChange((latest: string | boolean) => {
+      setValue(latest as string | boolean);
     });
     return () => {
       unobserve();
@@ -259,22 +294,25 @@ const OptionEditor = ({ flag }: EditorProps) => {
             </div>
           )}
           <label>{flag.label}</label>
-          <p className="text-xs opacity-70">{flag.value}</p>
+          <p className="text-xs opacity-70">{stringifyFlagValue(flag.value)}</p>
         </div>
         <ChevronDown className="size-4" />
         <select
           className="absolute inset-0 opacity-0"
-          value={value}
+          value={stringifyFlagValue(value)}
           onMouseDown={() => setShouldShowTips(false)}
           onChange={(e) => {
             const newValue = e.target.value;
-            flag.value = newValue;
+            if (newValue === undefined) {
+              throw "Unexpected undefined";
+            }
+            flag.value = unstringifyFlagValue(newValue)!;
             setValue(newValue);
           }}
         >
-          {flag.values.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {flag.values.map((option, index) => (
+            <option key={index} value={stringifyFlagValue(option)}>
+              {stringifyFlagValue(option)}
             </option>
           ))}
         </select>
@@ -282,7 +320,6 @@ const OptionEditor = ({ flag }: EditorProps) => {
     </>
   );
 };
-
 const ChevronDown: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     width="24"
